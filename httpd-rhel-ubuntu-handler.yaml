@@ -1,0 +1,19 @@
+---
+- name: Example playbook with 'when' condition
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install httpd on RHEL
+      yum:
+        name: httpd
+        state: present
+      when: "'RedHat' in ansible_distribution"
+      notify: Start and enable httpd or apache2 service
+
+  handlers: 
+    - name: Start and enable httpd or apache2 service
+      systemd:
+        name: "{{ 'httpd' if 'RedHat' in ansible_distribution else 'apache2' }}"
+        state: started
+        enabled: yes

@@ -1,0 +1,64 @@
+---
+- name: Example playbook with 'when' condition
+  hosts: all
+  become: yes
+  vars: 
+   port: 8082  
+  tasks:
+    - name: Install httpd on RHEL
+      yum:
+        name: httpd
+        state: present
+      when: "'RedHat' in ansible_distribution"
+      notify: start apache
+
+    - name: Install apache2 on Ubuntu
+      apt:
+        name: apache2
+        state: present
+      when: "'Ubuntu' in ansible_distribution"
+      notify: start apache2
+    - name: Ensure default port is {{ port }}
+      lineinfile:
+           path: /etc/httpd/conf/httpd.conf
+           regexp: '^Listen '
+           insertafter: '^#Listen '
+           line: Listen {{ port }}     
+      when: "'RedHat' in ansible_distribution" 
+      notify: restart httpd
+    - name: Ensure default port is {{ port }}  on ubnutu
+      lineinfile:
+           path: /etc/apache2/ports.conf
+           regexp: '^Listen '
+           insertafter: '# /etc/apache2/sites-enabled/000-default.conf '
+           line: Listen {{ port }}
+      when: "'Ubuntu' in ansible_distribution"
+      notify: restart apache2
+   
+     
+
+  handlers:    
+    - name: start apache 
+      systemd:
+        name: httpd
+        state: started
+        enabled: yes
+      when: "'RedHat' in ansible_distribution" 
+    - name: start apache2
+      systemd:
+        name: apache2
+        state: started
+        enabled: yes
+      when: "'Ubuntu' in ansible_distribution"
+    - name : restart httpd
+      systemd:
+        name: httpd
+        state: restarted
+    - name : restart apache2
+      systemd:
+        name: apache2
+        state: restarted
+ 
+  
+
+ 

@@ -1,0 +1,32 @@
+---
+# tasks file for setup-apache
+    - name: Install httpd on RHEL
+      yum:
+        name: httpd
+        state: present
+      when: "'RedHat' in ansible_distribution"
+      notify: start apache
+
+    - name: Install apache2 on Ubuntu
+      apt:
+        name: apache2
+        state: present
+      when: "'Ubuntu' in ansible_distribution"
+      notify: start apache2
+    - name: Ensure default port is {{ port }}
+      lineinfile:
+           path: /etc/httpd/conf/httpd.conf
+           regexp: '^Listen '
+           insertafter: '^#Listen '
+           line: Listen {{ port }}
+      when: "'RedHat' in ansible_distribution"
+      notify: restart httpd
+    - name: Ensure default port is {{ port }}  on ubnutu
+      lineinfile:
+           path: /etc/apache2/ports.conf
+           regexp: '^Listen '
+           insertafter: '# /etc/apache2/sites-enabled/000-default.conf '
+           line: Listen {{ port }}
+      when: "'Ubuntu' in ansible_distribution"
+      notify: restart apache2
+

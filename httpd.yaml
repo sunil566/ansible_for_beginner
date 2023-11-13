@@ -1,0 +1,10 @@
+---
+- name: Install HTTPD on RHEL
+  hosts: web
+  become: yes  # Run tasks with elevated privileges (sudo)
+
+  tasks:
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present

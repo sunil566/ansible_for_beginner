@@ -1,0 +1,12 @@
+---
+- name: Create a file
+  hosts: all
+  become: yes  # Run tasks with elevated privileges (sudo)
+
+  tasks:
+    - name: Create a text file
+      file:
+        path: /home/ansible/abc
+        state: directory
+
+

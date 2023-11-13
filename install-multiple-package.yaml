@@ -1,0 +1,16 @@
+---
+- name: mutliple packaged
+  hosts: web
+  become: yes  # Run tasks with elevated privileges (sudo)
+
+  tasks:
+    - name: Install mutliple packege
+      yum:
+        name: "{{ item }}"
+        state: installed
+      with_items:
+        - git
+        - make
+        - wget
+        - telnet   
+      when: "'RedHat' in ansible_distribution"

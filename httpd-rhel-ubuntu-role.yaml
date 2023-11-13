@@ -1,0 +1,9 @@
+---
+- name: Example playbook with 'when' condition
+  hosts: all
+  become: yes
+  roles:
+    - setup-apache
+  
+
+ 

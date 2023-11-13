@@ -1,0 +1,10 @@
+---
+- name: Copy a file to a remote machine
+  hosts: all1
+  become: yes  # Run tasks with elevated privileges (sudo)
+
+  tasks:
+    - name: Copy a file
+      copy:
+        src: httpd.yaml
+        dest: /home/ansible/httpd.yaml
